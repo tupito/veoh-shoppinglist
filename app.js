@@ -41,7 +41,7 @@ app.get('/', user_is_logged_in_handler, (req, res, next) => {
     <div class = "info">
         Logged in as user: ${user}
         <form action="/logout" method="POST">
-            <button type="submit">Log out</button>
+            <button type="submit" class="btn-danger">Log out</button>
         </form>
     </div>
     `);
@@ -64,12 +64,12 @@ app.get('/login', (req, res, next) => {
                 <form action="/login" method="POST">
                     <label for="log_user">Login</label>
                     <input type="text" name="username" id="log_user">
-                    <button type="submit">Log in</button>
+                    <button type="submit" class="btn-primary">Log in</button>
                 </form>
                 <form action="/register" method="POST">
                     <label for="reg_user">Register</label>
                     <input type="text" name="username" id="reg_user">
-                    <button type="submit">Register</button>
+                    <button type="submit" class="btn-primary">Register</button>
                 </form>
             </div>
         </body>
@@ -90,6 +90,11 @@ app.post('/login', (req, res, next) => {
     console.log('Username not registered: ', user);
     res.redirect('/login');
 });
+
+app.post('/logout', (req, res, next) => {
+    req.session.destroy();
+    res.redirect('/login');
+})
 
 app.post('/register', (req, res, next) => {
     const username = req.body.username;
