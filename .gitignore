@@ -1,3 +1,6 @@
+# TT
+*.txt
+
 # Logs
 logs
 *.log
