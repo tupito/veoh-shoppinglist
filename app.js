@@ -6,6 +6,14 @@ const session = require('express-session');
 let app = express();
 
 let users = [];
+users.push('asdf');
+
+// dummylists, not per user
+let dummyShoppingLists = [];
+let list1 = { 'id': '1', 'name':'ruokakauppa', 'items': [ {'name' : 'kurkku','quantity' : 2}, {'name' : 'tomaatti','quantity' : 5} ]}
+let list2 = { 'id': '2', 'name':'muut kaupat','items': [ {'name' : 'bensa','quantity' : 55}, {'name' : 'tuoli','quantity' : 5} ]}
+dummyShoppingLists.push(list1)
+dummyShoppingLists.push(list2)
 
 const user_is_logged_in_handler = (req, res, next) => {
     if (!req.session.user) {
@@ -37,14 +45,43 @@ app.use((req, res, next) => {
 
 app.get('/', user_is_logged_in_handler, (req, res, next) => {
     const user = req.session.user;
-    res.send(`
+    res.write(`
     <div class = "info">
         Logged in as user: ${user}
         <form action="/logout" method="POST">
             <button type="submit" class="btn-danger">Log out</button>
         </form>
     </div>
-    `);
+
+    <div class = "dummyShoppingLists">
+    <h1>User's ${user} dummyShoppingLists</h1><ul>`);
+    dummyShoppingLists.forEach((value, index) => {
+        res.write(`<li> <a href="./shoppinglist/${value.id}"> ${value.name}</a></li>`);
+    });
+    res.write(`</ul></div>`);
+    res.end();
+    return;
+});
+
+app.get('/shoppinglist/:id', (req, res, next) => {
+    const shoppinglistId = req.params.id;
+    let shoppingList = dummyShoppingLists.filter((list) => {
+        return list.id === shoppinglistId;
+    })
+    res.write(`
+    <div class = "dummyShoppingLists">
+    <h1>shoppinglist with id: ${req.params.id}</h1>`);
+    
+    console.log(shoppingList)
+    console.log(shoppingList[0])
+
+    res.write(`<ul>`)
+    shoppingList[0].items.forEach((value, index) => {
+        res.write(`<li>${value.name} ${value.quantity}</li>`)
+    })
+    res.write(`</ul><a href="/">Return</a></div>`)
+    res.end();
+    return;
 });
 
 app.get('/login', (req, res, next) => {
