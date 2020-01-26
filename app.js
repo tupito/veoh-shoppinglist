@@ -1,10 +1,28 @@
 const express = require('express');
 const PORT = process.env.PORT || 8080;
 const body_parser = require('body-parser');
+const session = require('express-session');
 
 let app = express();
 
 let users = [];
+
+const user_is_logged_in_handler = (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    next();
+}
+
+// middleware: session
+app.use(session({
+    secret: '!sBSytN8]V(|<z}6JXRjt7l6r`QYj6g6lGc3j]TS:1g(fIaNZ0^*gdrqg&eE',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 100000
+    }
+}));
 
 // middleware: body-parser
 app.use(body_parser.urlencoded({
@@ -17,7 +35,19 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res, next) => {
+app.get('/', user_is_logged_in_handler, (req, res, next) => {
+    const user = req.session.user;
+    res.send(`
+    <div class = "info">
+        Logged in as user: ${user}
+        <form action="/logout" method="POST">
+            <button type="submit">Log out</button>
+        </form>
+    </div>
+    `);
+});
+
+app.get('/login', (req, res, next) => {
     res.send(`
         <!DOCTYPE html>
         <html lang="en">
@@ -33,36 +63,50 @@ app.get('/', (req, res, next) => {
             <div id="login_reg_container">
                 <form action="/login" method="POST">
                     <label for="log_user">Login</label>
-                    <input type="text" name="user_name" id="log_user">
+                    <input type="text" name="username" id="log_user">
                     <button type="submit">Log in</button>
                 </form>
                 <form action="/register" method="POST">
                     <label for="reg_user">Register</label>
-                    <input type="text" name="user_name" id="reg_user">
+                    <input type="text" name="username" id="reg_user">
                     <button type="submit">Register</button>
                 </form>
             </div>
         </body>
         </html>
     `)
-})
+});
+
+app.post('/login', (req, res, next) => {
+    const username = req.body.username;
+    let user = users.find((name) => {
+        return username === name;
+    });
+    if (user) {
+        console.log('User logged in: ', user);
+        req.session.user = user;
+        return res.redirect('/');
+    }
+    console.log('Username not registered: ', user);
+    res.redirect('/login');
+});
 
 app.post('/register', (req, res, next) => {
-    const user_name = req.body.user_name;
+    const username = req.body.username;
     let user = users.find((name) => {
-        return user_name === name;
+        return username === name;
     });
     if (user) {
         return res.send(`    
             <div class="warning">
-                <p>Username ${user_name} already registered.</p>
+                <p>Username ${username} already registered.</p>
                 <a href="/">Return</a>
             </div>
             `);
     }
-    users.push(user_name);
+    users.push(username);
     console.log('users:', users);
-    res.redirect('/')
+    res.redirect('/login')
 });
 
 // 404
