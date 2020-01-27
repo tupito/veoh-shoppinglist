@@ -22,6 +22,9 @@ const user_is_logged_in_handler = (req, res, next) => {
   next();
 };
 
+// middleware: css
+app.use(express.static(__dirname + "/public"));
+
 // middleware: session
 app.use(
   session({
