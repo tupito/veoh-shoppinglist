@@ -1,51 +1,55 @@
-const express = require('express');
+const express = require("express");
 const PORT = process.env.PORT || 8080;
-const body_parser = require('body-parser');
-const session = require('express-session');
+const body_parser = require("body-parser");
+const session = require("express-session");
 
 let app = express();
 
-let users = [];
-users.push('asdf');
+// dummies
+const dummy = require("./dummies");
+let dummies = dummy.shoppingLists();
+let users = dummy.users();
 
-// dummylists, not per user
-let dummyShoppingLists = [];
-let list1 = { 'id': '1', 'name':'ruokakauppa', 'items': [ {'name' : 'kurkku','quantity' : 2}, {'name' : 'tomaatti','quantity' : 5} ]}
-let list2 = { 'id': '2', 'name':'muut kaupat','items': [ {'name' : 'bensa','quantity' : 55}, {'name' : 'tuoli','quantity' : 5} ]}
-dummyShoppingLists.push(list1)
-dummyShoppingLists.push(list2)
+// current user's shopping lists
+let shoppingLists = [];
+
+//console.log(JSON.stringify( shoppingLists ))
 
 const user_is_logged_in_handler = (req, res, next) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-}
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  next();
+};
 
 // middleware: session
-app.use(session({
-    secret: '!sBSytN8]V(|<z}6JXRjt7l6r`QYj6g6lGc3j]TS:1g(fIaNZ0^*gdrqg&eE',
+app.use(
+  session({
+    secret: "!sBSytN8]V(|<z}6JXRjt7l6r`QYj6g6lGc3j]TS:1g(fIaNZ0^*gdrqg&eE",
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 100000
+      maxAge: 100000
     }
-}));
+  })
+);
 
 // middleware: body-parser
-app.use(body_parser.urlencoded({
+app.use(
+  body_parser.urlencoded({
     extended: true
-}));
+  })
+);
 
 // middleware: logger
 app.use((req, res, next) => {
-    console.log(`${req.method} - ${req.path}`);
-    next();
+  console.log(`${req.method} - ${req.path}`);
+  next();
 });
 
-app.get('/', user_is_logged_in_handler, (req, res, next) => {
-    const user = req.session.user;
-    res.write(`
+app.get("/", user_is_logged_in_handler, (req, res, next) => {
+  const user = req.session.user;
+  res.write(`
     <div class = "info">
         Logged in as user: ${user}
         <form action="/logout" method="POST">
@@ -53,39 +57,52 @@ app.get('/', user_is_logged_in_handler, (req, res, next) => {
         </form>
     </div>
 
-    <div class = "dummyShoppingLists">
-    <h1>User's ${user} dummyShoppingLists</h1><ul>`);
-    dummyShoppingLists.forEach((value, index) => {
-        res.write(`<li> <a href="./shoppinglist/${value.id}"> ${value.name}</a></li>`);
-    });
-    res.write(`</ul></div>`);
-    res.end();
-    return;
+    <div class = "shoppingLists">
+    <h1>User's ${user} shoppingLists</h1><ul>`);
+
+  // etsi kirjautuneen käyttäjän kauppalistat
+  let userCol = dummies.filter(list => {
+    return list.user === user;
+  });
+
+  shoppingLists = userCol[0].shoppingLists;
+
+  // käyttäjän ruokalistat
+  shoppingLists.forEach((value, index) => {
+    res.write(
+      `<li> <a href="./shoppinglist/${value.id}"> ${value.name}</a></li>`
+    );
+  });
+  res.write(`</ul></div>`);
+  res.end();
+  return;
 });
 
-app.get('/shoppinglist/:id', (req, res, next) => {
-    const shoppinglistId = req.params.id;
-    let shoppingList = dummyShoppingLists.filter((list) => {
-        return list.id === shoppinglistId;
-    })
-    res.write(`
-    <div class = "dummyShoppingLists">
+app.get("/shoppinglist/:id", (req, res, next) => {
+  const shoppinglistId = req.params.id;
+
+  // etsi halutun listan tuotteet
+  let shoppingList = shoppingLists.filter(list => {
+    return list.id === shoppinglistId;
+  });
+  res.write(`
+    <div class = "shoppingLists">
     <h1>shoppinglist with id: ${req.params.id}</h1>`);
-    
-    console.log(shoppingList)
-    console.log(shoppingList[0])
 
-    res.write(`<ul>`)
-    shoppingList[0].items.forEach((value, index) => {
-        res.write(`<li>${value.name} ${value.quantity}</li>`)
-    })
-    res.write(`</ul><a href="/">Return</a></div>`)
-    res.end();
-    return;
+  console.log(shoppingList);
+  console.log(shoppingList[0]);
+
+  res.write(`<ul>`);
+  shoppingList[0].items.forEach((value, index) => {
+    res.write(`<li>${value.name} ${value.quantity}</li>`);
+  });
+  res.write(`</ul><a href="/">Return</a></div>`);
+  res.end();
+  return;
 });
 
-app.get('/login', (req, res, next) => {
-    res.send(`
+app.get("/login", (req, res, next) => {
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -111,50 +128,50 @@ app.get('/login', (req, res, next) => {
             </div>
         </body>
         </html>
-    `)
+    `);
 });
 
-app.post('/login', (req, res, next) => {
-    const username = req.body.username;
-    let user = users.find((name) => {
-        return username === name;
-    });
-    if (user) {
-        console.log('User logged in: ', user);
-        req.session.user = user;
-        return res.redirect('/');
-    }
-    console.log('Username not registered: ', user);
-    res.redirect('/login');
+app.post("/login", (req, res, next) => {
+  const username = req.body.username;
+  let user = users.find(name => {
+    return username === name;
+  });
+  if (user) {
+    console.log("User logged in: ", user);
+    req.session.user = user;
+    return res.redirect("/");
+  }
+  console.log("Username not registered: ", user);
+  res.redirect("/login");
 });
 
-app.post('/logout', (req, res, next) => {
-    req.session.destroy();
-    res.redirect('/login');
-})
+app.post("/logout", (req, res, next) => {
+  req.session.destroy();
+  res.redirect("/login");
+});
 
-app.post('/register', (req, res, next) => {
-    const username = req.body.username;
-    let user = users.find((name) => {
-        return username === name;
-    });
-    if (user) {
-        return res.send(`    
+app.post("/register", (req, res, next) => {
+  const username = req.body.username;
+  let user = users.find(name => {
+    return username === name;
+  });
+  if (user) {
+    return res.send(`    
             <div class="warning">
                 <p>Username ${username} already registered.</p>
                 <a href="/">Return</a>
             </div>
             `);
-    }
-    users.push(username);
-    console.log('users:', users);
-    res.redirect('/login')
+  }
+  users.push(username);
+  console.log("users:", users);
+  res.redirect("/login");
 });
 
 // 404
 app.use((req, res, next) => {
-    res.status(404);
-    res.send(`404 - page not found`);
+  res.status(404);
+  res.send(`404 - page not found`);
 });
 
 app.listen(PORT);
