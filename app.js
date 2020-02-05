@@ -5,13 +5,7 @@ const session = require("express-session");
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const user_schema = new Schema({
-  name: {
-    type: String,
-    required: true
-  }
-});
-const user_model = mongoose.model('user', user_schema);
+const user_model = require('./models/user_model');
 
 let app = express();
 
@@ -67,7 +61,10 @@ app.use((req, res, next) => {
   user_model.findById(req.session.user._id).then((user) => {
     req.user = user;
     next();
-  })
+  }).catch((err) => {
+    console.log(err);
+    res.redirect('login');
+  });
 });
 
 app.get("/", user_is_logged_in_handler, (req, res, next) => {
@@ -82,23 +79,7 @@ app.get("/", user_is_logged_in_handler, (req, res, next) => {
 
     <div class = "shoppingLists">
     <h1>User's ${user.name} shoppingLists</h1><ul>`);
-
-  // etsi kirjautuneen käyttäjän kauppalistat
-  let userCol = dummies.filter(list => {
-    return list.user === user;
-  });
-
-  shoppingLists = userCol[0].shoppingLists;
-
-  // käyttäjän ruokalistat
-  shoppingLists.forEach((value, index) => {
-    res.write(
-      `<li> <a href="./shoppinglist/${value.id}"> ${value.name}</a></li>`
-    );
-  });
-  res.write(`</ul></div>`);
   res.end();
-  return;
 });
 
 app.get("/shoppinglist/:id", (req, res, next) => {
