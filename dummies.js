@@ -15,7 +15,7 @@ const shoppingLists = () => {
         id: "2",
         name: "muut kaupat",
         items: [
-          { name: "paska", quantity: 55 },
+          { name: "something", quantity: 55 },
           { name: "lapio", quantity: 5 }
         ]
       }

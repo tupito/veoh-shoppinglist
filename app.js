@@ -2,6 +2,7 @@ const express = require("express");
 const PORT = process.env.PORT || 8080;
 const body_parser = require("body-parser");
 const session = require("express-session");
+const mongoose = require('mongoose');
 
 let app = express();
 
@@ -177,4 +178,13 @@ app.use((req, res, next) => {
   res.send(`404 - page not found`);
 });
 
-app.listen(PORT);
+const mongoose_url = 'mongodb+srv://shoppinglistappdb:a8WgpQQqyiKvdKU0@cluster0-lyyxe.mongodb.net/test?retryWrites=true&w=majority'
+
+mongoose.connect(mongoose_url, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+}).then(() => {
+  console.log('Mongoosed connected');
+  console.log('Start Express server');
+  app.listen(PORT);  
+});
