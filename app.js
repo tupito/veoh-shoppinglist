@@ -3,13 +3,22 @@ const PORT = process.env.PORT || 8080;
 const body_parser = require("body-parser");
 const session = require("express-session");
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const user_schema = new Schema({
+  name: {
+    type: String,
+    required: true
+  }
+});
+const user_model = mongoose.model('user', user_schema);
 
 let app = express();
 
 // dummies
 const dummy = require("./dummies");
 let dummies = dummy.shoppingLists();
-let users = dummy.users();
+let users = [];
 
 // current user's shopping lists
 let shoppingLists = [];
@@ -51,18 +60,28 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  user_model.findById(req.session.user._id).then((user) => {
+    req.user = user;
+    next();
+  })
+});
+
 app.get("/", user_is_logged_in_handler, (req, res, next) => {
-  const user = req.session.user;
+  const user = req.user;
   res.write(`
     <div class = "info">
-        Logged in as user: ${user}
+        Logged in as user: ${user.name}
         <form action="/logout" method="POST">
             <button type="submit" class="btn-danger">Log out</button>
         </form>
     </div>
 
     <div class = "shoppingLists">
-    <h1>User's ${user} shoppingLists</h1><ul>`);
+    <h1>User's ${user.name} shoppingLists</h1><ul>`);
 
   // etsi kirjautuneen käyttäjän kauppalistat
   let userCol = dummies.filter(list => {
@@ -136,17 +155,16 @@ app.get("/login", (req, res, next) => {
 });
 
 app.post("/login", (req, res, next) => {
-  const username = req.body.username;
-  let user = users.find(name => {
-    return username === name;
+  const user_name = req.body.username;
+  user_model.findOne({
+    name: user_name
+  }).then((user) => {
+    if (user) {
+      req.session.user = user;
+      return res.redirect('/');
+    }
+    res.redirect('/login');
   });
-  if (user) {
-    console.log("User logged in: ", user);
-    req.session.user = user;
-    return res.redirect("/");
-  }
-  console.log("Username not registered: ", user);
-  res.redirect("/login");
 });
 
 app.post("/logout", (req, res, next) => {
@@ -155,21 +173,24 @@ app.post("/logout", (req, res, next) => {
 });
 
 app.post("/register", (req, res, next) => {
-  const username = req.body.username;
-  let user = users.find(name => {
-    return username === name;
+  const user_name = req.body.username;
+
+  user_model.findOne({
+    name: user_name
+  }).then((user) => {
+    if (user) {
+      console.log('user name already registered');
+      return res.redirect('/login');
+    }
+
+    let new_user = new user_model({
+      name: user_name
+    });
+
+    new_user.save().then(() => {
+      return res.redirect('/login');
+    });
   });
-  if (user) {
-    return res.send(`    
-            <div class="warning">
-                <p>Username ${username} already registered.</p>
-                <a href="/">Return</a>
-            </div>
-            `);
-  }
-  users.push(username);
-  console.log("users:", users);
-  res.redirect("/login");
 });
 
 // 404
