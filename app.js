@@ -76,13 +76,17 @@ app.use((req, res, next) => {
 
 app.get("/", user_is_logged_in_handler, (req, res, next) => {
   const user = req.user;
-  console.log('user:', user);
+  user.populate('shoppinglists')
+  .execPopulate()
+  .then(() => {
+    console.log('user:', user);
     let data = {
-      user_name: user.name
-      //shoppinglists: user.shoppinglists
+      user_name: user.name,
+      shoppinglists: user.shoppinglists
     }
     let html = shoppinglist_views.shoppinglists_view(data); 
     res.send(html);
+  });
 });
 
 app.post("/add-shoppinglist", (req, res, next) => {

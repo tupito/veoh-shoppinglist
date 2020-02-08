@@ -9,9 +9,15 @@ const shoppinglists_view = ((data) =>{
 
     <div class = "shoppingLists">
     <h1>User's ${data.user_name} shoppingLists</h1>
+    `;
 
-    <!-- TODO FOREACH SHOPPINGLISTS -->
-    
+    data.shoppinglists.forEach(shoppinglist => {
+        console.log(shoppinglist)
+        html += `<li>${shoppinglist.name}</li>`
+
+    });
+
+    html += `
     <div>
       <form action="/add-shoppinglist" method="POST">
           <label for="shoppinglist_name">New shoppinglist</label>
