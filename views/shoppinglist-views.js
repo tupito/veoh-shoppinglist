@@ -7,6 +7,14 @@ const shoppinglists_view = ((data) =>{
         </form>
     </div>
 
+    <div>
+      <form action="/add-shoppinglist" method="POST">
+          <label for="shoppinglist_name">New shoppinglist</label>
+          <input type="text" name="shoppinglist_name">
+          <button type="submit" class="btn-primary">Add</button>
+      </form>
+    </div>
+
     <div class = "shoppingLists">
     <h1>User's ${data.user_name} shoppingLists</h1>
     `;
@@ -20,17 +28,7 @@ const shoppinglists_view = ((data) =>{
             </form>
         </li>`
     });
-
-    html += `
-    <div>
-      <form action="/add-shoppinglist" method="POST">
-          <label for="shoppinglist_name">New shoppinglist</label>
-          <input type="text" name="shoppinglist_name">
-          <button type="submit" class="btn-primary">Add</button>
-      </form>
-    </div>
-    `;
-
+    
     return html;
 });
 
