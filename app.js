@@ -20,9 +20,6 @@ let app = express();
 const dummy = require("./dummies");
 let dummies = dummy.shoppingLists();
 
-// current user's shopping lists
-let shoppinglists = [];
-
 const user_is_logged_in_handler = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect("/login");
@@ -99,6 +96,26 @@ app.post("/add-shoppinglist", (req, res, next) => {
     user.shoppinglists.push(new_shoppinglist);
     user.save().then(() => {
       return res.redirect('/');
+    });
+  });
+});
+
+app.post("/delete-shoppinglist", (req, res, next) => {
+  const user = req.user;
+  const shoppinglist_id_to_delete = req.body.shoppinglist_id;
+  
+
+  // remove from list
+  const updated_shoppinglists = user.shoppinglists.filter((shoppinglist_id) => {
+    return shoppinglist_id != shoppinglist_id_to_delete;
+  });
+  
+  user.shoppinglists = updated_shoppinglists;
+
+  // remove from db
+  user.save().then(() => {
+    shoppinglist_model.findByIdAndRemove(shoppinglist_id_to_delete).then(() => {
+      res.redirect('/');
     });
   });
 });
