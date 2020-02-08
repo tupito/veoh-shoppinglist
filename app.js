@@ -2,22 +2,20 @@ const express = require("express");
 const PORT = process.env.PORT || 8080;
 const body_parser = require("body-parser");
 const session = require("express-session");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const user_model = require('./models/user_model');
+const user_model = require("./models/user_model");
+const shoppinglist_model = require("./models/shoppinglist_model");
 
 let app = express();
 
 // dummies
 const dummy = require("./dummies");
 let dummies = dummy.shoppingLists();
-let users = [];
 
 // current user's shopping lists
 let shoppingLists = [];
-
-//console.log(JSON.stringify( shoppingLists ))
 
 const user_is_logged_in_handler = (req, res, next) => {
   if (!req.session.user) {
@@ -58,13 +56,16 @@ app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
-  user_model.findById(req.session.user._id).then((user) => {
-    req.user = user;
-    next();
-  }).catch((err) => {
-    console.log(err);
-    res.redirect('login');
-  });
+  user_model
+    .findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect("login");
+    });
 });
 
 app.get("/", user_is_logged_in_handler, (req, res, next) => {
@@ -137,15 +138,17 @@ app.get("/login", (req, res, next) => {
 
 app.post("/login", (req, res, next) => {
   const user_name = req.body.username;
-  user_model.findOne({
-    name: user_name
-  }).then((user) => {
-    if (user) {
-      req.session.user = user;
-      return res.redirect('/');
-    }
-    res.redirect('/login');
-  });
+  user_model
+    .findOne({
+      name: user_name
+    })
+    .then(user => {
+      if (user) {
+        req.session.user = user;
+        return res.redirect("/");
+      }
+      res.redirect("/login");
+    });
 });
 
 app.post("/logout", (req, res, next) => {
@@ -156,22 +159,24 @@ app.post("/logout", (req, res, next) => {
 app.post("/register", (req, res, next) => {
   const user_name = req.body.username;
 
-  user_model.findOne({
-    name: user_name
-  }).then((user) => {
-    if (user) {
-      console.log('user name already registered');
-      return res.redirect('/login');
-    }
-
-    let new_user = new user_model({
+  user_model
+    .findOne({
       name: user_name
-    });
+    })
+    .then(user => {
+      if (user) {
+        console.log("user name already registered");
+        return res.redirect("/login");
+      }
 
-    new_user.save().then(() => {
-      return res.redirect('/login');
+      let new_user = new user_model({
+        name: user_name
+      });
+
+      new_user.save().then(() => {
+        return res.redirect("/login");
+      });
     });
-  });
 });
 
 // 404
@@ -180,13 +185,16 @@ app.use((req, res, next) => {
   res.send(`404 - page not found`);
 });
 
-const mongoose_url = 'mongodb+srv://shoppinglistappdb:a8WgpQQqyiKvdKU0@cluster0-lyyxe.mongodb.net/test?retryWrites=true&w=majority'
+const mongoose_url =
+  "mongodb+srv://shoppinglistappdb:a8WgpQQqyiKvdKU0@cluster0-lyyxe.mongodb.net/test?retryWrites=true&w=majority";
 
-mongoose.connect(mongoose_url, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true
-}).then(() => {
-  console.log('Mongoosed connected');
-  console.log('Start Express server');
-  app.listen(PORT);  
-});
+mongoose
+  .connect(mongoose_url, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
+  .then(() => {
+    console.log("Mongoosed connected");
+    console.log("Start Express server");
+    app.listen(PORT);
+  });
