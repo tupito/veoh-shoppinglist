@@ -21,7 +21,7 @@ const dummy = require("./dummies");
 let dummies = dummy.shoppingLists();
 
 // current user's shopping lists
-let shoppingLists = [];
+let shoppinglists = [];
 
 const user_is_logged_in_handler = (req, res, next) => {
   if (!req.session.user) {
@@ -83,6 +83,20 @@ app.get("/", user_is_logged_in_handler, (req, res, next) => {
     }
     let html = shoppinglist_views.shoppinglists_view(data); 
     res.send(html);
+});
+
+app.post("/add-shoppinglist", (req, res, next) => {
+  const user = req.user;
+  let new_shoppinglist = shoppinglist_model({
+    name: req.body.shoppinglist_name
+  });
+  new_shoppinglist.save().then(() => {
+    console.log('shoppinglist saved');
+    user.shoppinglists.push(new_shoppinglist);
+    user.save().then(() => {
+      return res.redirect('/');
+    });
+  });
 });
 
 app.get("/shoppinglist/:id", (req, res, next) => {
