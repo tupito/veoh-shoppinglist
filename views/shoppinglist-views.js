@@ -9,6 +9,8 @@ const shoppinglists_view = ((data) =>{
 
     <div class = "shoppingLists">
     <h1>User's ${data.user_name} shoppingLists</h1>
+
+    <!-- TODO FOREACH SHOPPINGLISTS -->
     
     <div>
       <form action="/add-shoppinglist" method="POST">
