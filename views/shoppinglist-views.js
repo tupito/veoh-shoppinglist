@@ -21,7 +21,7 @@ const shoppinglists_view = ((data) =>{
 
     data.shoppinglists.forEach(shoppinglist => {
         console.log(shoppinglist)
-        html += `<li>${shoppinglist.name}
+        html += `<li><a href="/shoppinglist/${shoppinglist._id}">${shoppinglist.name}</a>
             <form action="delete-shoppinglist" method="POST">
                 <input type="hidden" name="shoppinglist_id" value="${shoppinglist._id}">
                 <button type="submit">Delete</button>

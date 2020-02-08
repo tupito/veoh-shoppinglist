@@ -121,26 +121,13 @@ app.post("/delete-shoppinglist", (req, res, next) => {
 });
 
 app.get("/shoppinglist/:id", (req, res, next) => {
-  const shoppinglistId = req.params.id;
+  const shoppinglist_id = req.params.id;
 
-  // etsi halutun listan tuotteet
-  let shoppingList = shoppingLists.filter(list => {
-    return list.id === shoppinglistId;
+  shoppinglist_model.findOne({
+    _id: shoppinglist_id
+  }).then((shoppinglist) => {
+    res.send('shoppinglist: ' + shoppinglist.name)
   });
-  res.write(`
-    <div class = "shoppingLists">
-    <h1>shoppinglist with id: ${req.params.id}</h1>`);
-
-  console.log(shoppingList);
-  console.log(shoppingList[0]);
-
-  res.write(`<ul>`);
-  shoppingList[0].items.forEach((value, index) => {
-    res.write(`<li>${value.name} ${value.quantity}</li>`);
-  });
-  res.write(`</ul><a href="/">Return</a></div>`);
-  res.end();
-  return;
 });
 
 app.get("/login", (req, res, next) => {
