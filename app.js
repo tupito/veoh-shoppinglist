@@ -5,9 +5,14 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// models
 const user_model = require("./models/user_model");
 const shoppinglist_model = require("./models/shoppinglist_model");
 const shoppinglist_item_model = require("./models/shoppinglist_item_model");
+
+//views
+const shoppinglist_views = require("./views/shoppinglist-views");
+
 
 let app = express();
 
@@ -71,17 +76,13 @@ app.use((req, res, next) => {
 
 app.get("/", user_is_logged_in_handler, (req, res, next) => {
   const user = req.user;
-  res.write(`
-    <div class = "info">
-        Logged in as user: ${user.name}
-        <form action="/logout" method="POST">
-            <button type="submit" class="btn-danger">Log out</button>
-        </form>
-    </div>
-
-    <div class = "shoppingLists">
-    <h1>User's ${user.name} shoppingLists</h1><ul>`);
-  res.end();
+  console.log('user:', user);
+    let data = {
+      user_name: user.name
+      //shoppinglists: user.shoppinglists
+    }
+    let html = shoppinglist_views.shoppinglists_view(data); 
+    res.send(html);
 });
 
 app.get("/shoppinglist/:id", (req, res, next) => {
