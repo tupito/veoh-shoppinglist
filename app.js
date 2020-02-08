@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 
 const user_model = require("./models/user_model");
 const shoppinglist_model = require("./models/shoppinglist_model");
+const shoppinglist_item_model = require("./models/shoppinglist_item_model");
 
 let app = express();
 
