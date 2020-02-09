@@ -1,7 +1,9 @@
+const html_shared = require('./shared-html')
+
 const img_url_list = () => {
-    return `
-    <div class='images'>
-    <p>copy-paste-urleja kuville</p>
+    let html = `
+    <div class='example-urls'>
+        <p>copy-paste-urleja kuville</p>
         <ul>
             <li>https://upload.wikimedia.org/wikipedia/commons/a/a1/Tux2.png</li>
             <li>https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Adobe_Systems_logo_and_wordmark.svg/200px-Adobe_Systems_logo_and_wordmark.svg.png</li>
@@ -9,10 +11,15 @@ const img_url_list = () => {
         </ul>
     </div>
     `
+    html += html_shared.html_footer;
+    return html;
 }
 
 const user_info_view = ((data) => {
-    let html = `
+
+    let html = html_shared.html_head;
+    
+    html += `
     <div class = "info">
     Logged in as user: ${data.user_name}
     <form action="/logout" method="POST">
@@ -49,12 +56,14 @@ const shoppinglists_view = ((data) =>{
     });
 
     html += `</div>`;
+    html += html_shared.html_footer;
     
     return html;
 });
 
 const shoppinglist_items_view = ((data) => {
-    let html = `
+    let html = html_shared.html_head
+    html += `
     <div>
     <div class = "shoppingListItems">
     <h1>Shopping list ${data.name} items, id ${data._id}</h1>
@@ -84,7 +93,8 @@ const shoppinglist_items_view = ((data) => {
                 <input type="hidden" name="shoppinglist_item_id" value="${item._id}">
                 <button type="submit">Delete</button>
             </form>
-        </li>`
+        </li>
+        `
     });  
 
     html += `</div>`;
