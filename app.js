@@ -71,21 +71,6 @@ app.use((req, res, next) => {
     });
 });
 
-app.get("/", user_is_logged_in_handler, (req, res, next) => {
-  const user = req.user;
-  user.populate('shoppinglists')
-  .execPopulate()
-  .then(() => {
-    console.log('user:', user);
-    let data = {
-      user_name: user.name,
-      shoppinglists: user.shoppinglists
-    }
-    let html = shoppinglist_views.shoppinglists_view(data); 
-    res.send(html);
-  });
-});
-
 app.post("/add-shoppinglist", (req, res, next) => {
   const user = req.user;
   let new_shoppinglist = shoppinglist_model({
@@ -93,6 +78,7 @@ app.post("/add-shoppinglist", (req, res, next) => {
   });
   new_shoppinglist.save().then(() => {
     console.log('shoppinglist saved');
+    console.log('user', user)
     user.shoppinglists.push(new_shoppinglist);
     user.save().then(() => {
       return res.redirect('/');
@@ -100,11 +86,34 @@ app.post("/add-shoppinglist", (req, res, next) => {
   });
 });
 
+app.post("/add-shoppinglist-item", (req, res, next) => {
+
+  let new_shoppinglist_item = shoppinglist_item_model({
+    name: req.body.item_name,
+    quantity: req.body.item_quantity
+  });
+
+  // find shoppinglist
+  shoppinglist_model
+  .findById(req.body.shoppinglist_id)
+  .then(shoppinglist => {
+    console.log(shoppinglist)
+    // insert new item
+    new_shoppinglist_item.save().then(() => {
+      shoppinglist.shoppinglist_items.push(new_shoppinglist_item);
+      shoppinglist.save().then(() => {
+        return res.redirect('/shoppinglist/' + req.body.shoppinglist_id);
+      });
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+});
+
 app.post("/delete-shoppinglist", (req, res, next) => {
   const user = req.user;
   const shoppinglist_id_to_delete = req.body.shoppinglist_id;
   
-
   // remove from list
   const updated_shoppinglists = user.shoppinglists.filter((shoppinglist_id) => {
     return shoppinglist_id != shoppinglist_id_to_delete;
@@ -120,13 +129,32 @@ app.post("/delete-shoppinglist", (req, res, next) => {
   });
 });
 
+app.get("/", user_is_logged_in_handler, (req, res, next) => {
+  const user = req.user;
+  user.populate('shoppinglists')
+  .execPopulate()
+  .then(() => {
+    console.log('user:', user);
+    let data = {
+      user_name: user.name,
+      shoppinglists: user.shoppinglists
+    }
+    let html = shoppinglist_views.shoppinglists_view(data); 
+    res.send(html);
+  });
+});
+
 app.get("/shoppinglist/:id", (req, res, next) => {
   const shoppinglist_id = req.params.id;
 
   shoppinglist_model.findOne({
     _id: shoppinglist_id
   }).then((shoppinglist) => {
-    res.send('shoppinglist: ' + shoppinglist.name)
+    shoppinglist.populate('shoppinglist_items')
+    .execPopulate()
+    .then(() => {
+      res.send(shoppinglist_views.shoppinglist_items_view(shoppinglist))
+    })
   });
 });
 
