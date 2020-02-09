@@ -1,3 +1,16 @@
+const img_url_list = () => {
+    return `
+    <div class='images'>
+    <p>copy-paste-urleja kuville</p>
+        <ul>
+            <li>https://upload.wikimedia.org/wikipedia/commons/a/a1/Tux2.png</li>
+            <li>https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Adobe_Systems_logo_and_wordmark.svg/200px-Adobe_Systems_logo_and_wordmark.svg.png</li>
+            <li>https://upload.wikimedia.org/wikipedia/commons/9/94/Logo_oracle.jpg</li>
+        </ul>
+    </div>
+    `
+}
+
 const user_info_view = ((data) => {
     let html = `
     <div class = "info">
@@ -53,6 +66,9 @@ const shoppinglist_items_view = ((data) => {
                 
                 <label for="item_quantity">Item quantity</label>
                 <input type="number" name="item_quantity">
+
+                <label for="item_image_url">Item image url</label>
+                <input type="text" name="item_image_url">                
                 
                 <input type="hidden" name="shoppinglist_id" value="${data._id}">
                 <button type="submit" class="btn-primary">Add</button>
@@ -62,7 +78,7 @@ const shoppinglist_items_view = ((data) => {
 
      data.shoppinglist_items.forEach(item => {
          html += `
-         <li>item: ${item.name} quantity: ${item.quantity}
+         <li>item: ${item.name} quantity: ${item.quantity} image: <img src="${item.image}" width="50px">
             <form action="delete-shoppinglist" method="POST">
                 <input type="hidden" name="shoppinglist_id" value="${item._id}">
                 <button type="submit">Delete</button>
@@ -71,6 +87,7 @@ const shoppinglist_items_view = ((data) => {
     });  
 
     html += `</div>`;
+    html += img_url_list();
 
     return html;
 })

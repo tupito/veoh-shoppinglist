@@ -86,7 +86,8 @@ app.post("/add-shoppinglist-item", (req, res, next) => {
 
   let new_shoppinglist_item = shoppinglist_item_model({
     name: req.body.item_name,
-    quantity: req.body.item_quantity
+    quantity: req.body.item_quantity,
+    image: req.body.item_image_url
   });
 
   // find shoppinglist
