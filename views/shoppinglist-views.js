@@ -79,8 +79,9 @@ const shoppinglist_items_view = ((data) => {
      data.shoppinglist_items.forEach(item => {
          html += `
          <li>item: ${item.name} quantity: ${item.quantity} image: <img src="${item.image}" width="50px">
-            <form action="delete-shoppinglist" method="POST">
-                <input type="hidden" name="shoppinglist_id" value="${item._id}">
+            <form action="/delete-shoppinglist-item" method="POST">
+                <input type="hidden" name="shoppinglist_id" value="${data._id}">
+                <input type="hidden" name="shoppinglist_item_id" value="${item._id}">
                 <button type="submit">Delete</button>
             </form>
         </li>`
