@@ -21,4 +21,10 @@ const post_register = (req, res, next) => {
       });
   }
 
+const post_logout = (req, res, next) => {
+    req.session.destroy();
+    res.redirect("/login");
+  }
+
 module.exports.post_register = post_register;
+module.exports.post_logout = post_logout;

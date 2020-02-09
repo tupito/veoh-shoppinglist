@@ -178,10 +178,7 @@ app.post("/login", (req, res, next) => {
     });
 });
 
-app.post("/logout", (req, res, next) => {
-  req.session.destroy();
-  res.redirect("/login");
-});
+app.post("/logout", auth_controller.post_logout);
 
 // Auth
 app.post("/register", auth_controller.post_register);
