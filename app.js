@@ -14,6 +14,9 @@ const shoppinglist_item_model = require("./models/shoppinglist_item_model");
 const shoppinglist_views = require("./views/shoppinglist-views");
 const auth_views = require("./views/auth-views");
 
+//controllers
+const auth_controller = require("./controllers/auth_controller");
+
 let app = express();
 
 const user_is_logged_in_handler = (req, res, next) => {
@@ -50,6 +53,7 @@ app.use((req, res, next) => {
   console.log(`${req.method} - ${req.path}`);
   next();
 });
+
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -179,28 +183,8 @@ app.post("/logout", (req, res, next) => {
   res.redirect("/login");
 });
 
-app.post("/register", (req, res, next) => {
-  const user_name = req.body.username;
-
-  user_model
-    .findOne({
-      name: user_name
-    })
-    .then(user => {
-      if (user) {
-        console.log("user name already registered");
-        return res.redirect("/login");
-      }
-
-      let new_user = new user_model({
-        name: user_name
-      });
-
-      new_user.save().then(() => {
-        return res.redirect("/login");
-      });
-    });
-});
+// Auth
+app.post("/register", auth_controller.post_register);
 
 // 404
 app.use((req, res, next) => {
