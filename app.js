@@ -1,8 +1,10 @@
 const express = require("express");
 const PORT = process.env.PORT || 8080;
-const body_parser = require("body-parser");
-const session = require("express-session");
+
 const mongoose = require("mongoose");
+
+//middleware
+const middleware = require("./middleware/middleware");
 
 //controllers
 const auth_controller = require("./controllers/auth_controller");
@@ -22,29 +24,13 @@ const user_is_logged_in_handler = (req, res, next) => {
 app.use(express.static(__dirname + "/public"));
 
 // middleware: session
-app.use(
-  session({
-    secret: "!sBSytN8]V(|<z}6JXRjt7l6r`QYj6g6lGc3j]TS:1g(fIaNZ0^*gdrqg&eE",
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 100000
-    }
-  })
-);
+app.use(middleware.session_conf);
 
 // middleware: body-parser
-app.use(
-  body_parser.urlencoded({
-    extended: true
-  })
-);
+app.use(middleware.body_parser_conf);
 
 // middleware: logger
-app.use((req, res, next) => {
-  console.log(`${req.method} - ${req.path}`);
-  next();
-});
+app.use(middleware.logger);
 
 // Auth
 app.use(auth_controller.handle_user);
@@ -61,6 +47,7 @@ app.post("/delete-shoppinglist", shoppinglist_controller.delete_shoppinglist);
 // Shoppinglist items
 app.get("/shoppinglist/:id", shoppinglist_items_controller.get_shoppinglist_items);
 app.post("/add-shoppinglist-item", shoppinglist_items_controller.add_shoppinglist_item);
+// todo remove
 
 // 404
 app.use((req, res, next) => {
