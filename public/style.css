@@ -10,18 +10,22 @@ body {
     border: 1px solid green;
     padding: 20px;
     margin: auto auto;
+    width: 50%;
 }
 
 /* login/register */ 
-.login_grid {
-    width: 50%;
+.login_container .login_grid {
     display: grid;
     grid-template-columns: 20% 50% 30%;
 }
 
-.login_grid .grid-item{
+.login_container .login_grid .grid-item {
     padding: 5px;
     text-align: left;
+}
+
+.logged_in_container {
+    text-align: right;
 }
 
 /* buttons */
@@ -33,10 +37,11 @@ body {
 }
 
 .btn-primary {
-    background-color: #008CBA; /* Blue */
+    background-color: #008CBA;
 }
 
 .btn-danger {
+    background-color: #f44336;
 }
 
 

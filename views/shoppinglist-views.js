@@ -20,10 +20,10 @@ const user_info_view = ((data) => {
     let html = html_shared.html_head;
     
     html += `
-    <div class = "info">
-    Logged in as user: ${data.user_name}
+    <div class = "logged_in_container">
     <form action="/logout" method="POST">
-        <button type="submit" class="btn-danger">Log out</button>
+        Logged in as user: ${data.user_name}
+        <button type="submit" class="btn btn-danger">Log out</button></div>
     </form>
     </div>
     `

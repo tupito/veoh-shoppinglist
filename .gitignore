@@ -1,6 +1,7 @@
 # TT
 *.txt
 tmp.html
+tmp2.html
 
 # Logs
 logs
