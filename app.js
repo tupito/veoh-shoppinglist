@@ -16,10 +16,6 @@ const auth_views = require("./views/auth-views");
 
 let app = express();
 
-// dummies
-const dummy = require("./dummies");
-let dummies = dummy.shoppingLists();
-
 const user_is_logged_in_handler = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect("/login");

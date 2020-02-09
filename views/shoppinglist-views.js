@@ -27,7 +27,6 @@ const shoppinglists_view = ((data) =>{
     `;
 
     data.shoppinglists.forEach(shoppinglist => {
-        console.log(shoppinglist)
         html += `<li><a href="/shoppinglist/${shoppinglist._id}">${shoppinglist.name}</a>
             <form action="delete-shoppinglist" method="POST">
                 <input type="hidden" name="shoppinglist_id" value="${shoppinglist._id}">
@@ -42,9 +41,6 @@ const shoppinglists_view = ((data) =>{
 });
 
 const shoppinglist_items_view = ((data) => {
-
-    console.log(data)
-
     let html = `
     <div>
     <div class = "shoppingListItems">
@@ -65,7 +61,6 @@ const shoppinglist_items_view = ((data) => {
     `;
 
      data.shoppinglist_items.forEach(item => {
-        console.log(item)
          html += `
          <li>item: ${item.name} quantity: ${item.quantity}
             <form action="delete-shoppinglist" method="POST">
