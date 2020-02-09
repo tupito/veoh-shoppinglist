@@ -159,29 +159,11 @@ app.get("/shoppinglist/:id", (req, res, next) => {
   });
 });
 
-app.get("/login", (req, res, next) => {
-  res.send(auth_views.login_view())
-});
-
-app.post("/login", (req, res, next) => {
-  const user_name = req.body.username;
-  user_model
-    .findOne({
-      name: user_name
-    })
-    .then(user => {
-      if (user) {
-        req.session.user = user;
-        return res.redirect("/");
-      }
-      res.redirect("/login");
-    });
-});
-
-app.post("/logout", auth_controller.post_logout);
-
 // Auth
+app.get("/login", auth_controller.get_login);
 app.post("/register", auth_controller.post_register);
+app.post("/login", auth_controller.post_login);
+app.post("/logout", auth_controller.post_logout);
 
 // 404
 app.use((req, res, next) => {
