@@ -1,6 +1,22 @@
 const user_model = require("../models/user_model")
 const auth_views = require("../views/auth-views");
 
+const handle_user = (req, res, next) => {
+    if (!req.session.user) {
+      return next();
+    }
+    user_model
+      .findById(req.session.user._id)
+      .then(user => {
+        req.user = user;
+        next();
+      })
+      .catch(err => {
+        console.log(err);
+        res.redirect("login");
+      });
+  }
+
 const post_register = (req, res, next) => {
     const user_name = req.body.username;
   
@@ -48,6 +64,7 @@ const post_logout = (req, res, next) => {
     res.redirect("/login");
   }
 
+module.exports.handle_user = handle_user;
 module.exports.post_register = post_register;
 module.exports.get_login = get_login;
 module.exports.post_login = post_login;

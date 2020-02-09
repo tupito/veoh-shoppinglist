@@ -12,7 +12,6 @@ const shoppinglist_item_model = require("./models/shoppinglist_item_model");
 
 //views
 const shoppinglist_views = require("./views/shoppinglist-views");
-const auth_views = require("./views/auth-views");
 
 //controllers
 const auth_controller = require("./controllers/auth_controller");
@@ -55,21 +54,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  user_model
-    .findById(req.session.user._id)
-    .then(user => {
-      req.user = user;
-      next();
-    })
-    .catch(err => {
-      console.log(err);
-      res.redirect("login");
-    });
-});
+
 
 app.post("/add-shoppinglist", (req, res, next) => {
   const user = req.user;
@@ -160,10 +145,13 @@ app.get("/shoppinglist/:id", (req, res, next) => {
 });
 
 // Auth
+app.use(auth_controller.handle_user);
 app.get("/login", auth_controller.get_login);
 app.post("/register", auth_controller.post_register);
 app.post("/login", auth_controller.post_login);
 app.post("/logout", auth_controller.post_logout);
+
+// Notes
 
 // 404
 app.use((req, res, next) => {
