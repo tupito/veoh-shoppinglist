@@ -15,8 +15,9 @@ const html_head = `
     `;
 
 const html_footer = `
-    <hr>
-    This is the footer
+    <footer>
+    VEOH-OHSU19S Harjtyö
+    </footer>
     </body>
     </html>
     `;

@@ -73,6 +73,7 @@ const shoppinglists_view = ((data) =>{
 const shoppinglist_items_view = ((data) => {
     let html = html_shared.html_head
     html += `
+    <a href = "/">Return to list selection</a>
     <div class = "shoppinglist-list-container">
     <h2>Shoppinglist: ${data.name}</h2>
     <h3>New item</h3>

@@ -5,6 +5,14 @@ body {
     margin: auto;
 }
 
+footer {
+    border-top: 1px dotted grey;
+    margin-top: 20px;
+    font-style: italic;
+    color: grey;
+    text-align: right;
+}
+
 .login_container {
     border-radius: 10px;
     border: 1px solid green;
