@@ -71,14 +71,20 @@ const shoppinglists_view = ((data) =>{
 });
 
 const shoppinglist_items_view = ((data) => {
-    let html = html_shared.html_head
+
+    console.log(data)
+    
+
+    //let html = html_shared.html_head
+    let html = user_info_view(data)
     html += `
-    <a href = "/">Return to list selection</a>
+    
     <div class = "shoppinglist-list-container">
-    <h2>Shoppinglist: ${data.name}</h2>
+    <a href = "/">Return to list selection</a>
+    <h2>Shoppinglist: ${data.shoppinglist.name}</h2>
     <h3>New item</h3>
     <form action="/add-shoppinglist-item" method="POST">
-    <input type="hidden" name="shoppinglist_id" value="${data._id}">
+    <input type="hidden" name="shoppinglist_id" value="${data.shoppinglist._id}">
         <div class="list-grid-2-col">
             <div class="grid-item">
                 <label for="item_name">Item name </label>
@@ -113,7 +119,7 @@ const shoppinglist_items_view = ((data) => {
     <h3>items</h3>
     `;
 
-     data.shoppinglist_items.forEach(item => {
+     data.shoppinglist.shoppinglist_items.forEach(item => {
         html += `
         <form action="/delete-shoppinglist-item" method="POST">
         <input type="hidden" name="shoppinglist_id" value="${data._id}">

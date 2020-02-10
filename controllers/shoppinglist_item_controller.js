@@ -8,10 +8,16 @@ const get_shoppinglist_items = (req, res, next) => {
   shoppinglist_model.findOne({
     _id: shoppinglist_id
   }).then((shoppinglist) => {
+
+    let data = {
+      shoppinglist: shoppinglist,
+      user_name: req.user.name
+    }
+
     shoppinglist.populate('shoppinglist_items')
     .execPopulate()
     .then(() => {
-      res.send(shoppinglist_views.shoppinglist_items_view(shoppinglist))
+      res.send(shoppinglist_views.shoppinglist_items_view(data))
     })
   }).catch(err => {
     console.log(err);

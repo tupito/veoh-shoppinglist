@@ -35,6 +35,7 @@ footer {
 /* logged in */
 .logged_in_container {
     text-align: right;
+    border: 1px solid red;
 }
 
 /* shoppinglist list */
