@@ -120,9 +120,11 @@ const shoppinglist_items_view = ((data) => {
     `;
 
      data.shoppinglist.shoppinglist_items.forEach(item => {
+        
+
         html += `
         <form action="/delete-shoppinglist-item" method="POST">
-        <input type="hidden" name="shoppinglist_id" value="${data._id}">
+        <input type="hidden" name="shoppinglist_id" value="${data.shoppinglist._id}">
         <input type="hidden" name="shoppinglist_item_id" value="${item._id}">
 
         <div class="list-grid-4-col">

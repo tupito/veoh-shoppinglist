@@ -35,7 +35,7 @@ footer {
 /* logged in */
 .logged_in_container {
     text-align: right;
-    border: 1px solid red;
+    padding: 5px;
 }
 
 /* shoppinglist list */
@@ -87,6 +87,7 @@ footer {
     border: none;
     color: white;
     padding: 5px;
+    cursor: pointer;
 }
 
 .btn-primary {
