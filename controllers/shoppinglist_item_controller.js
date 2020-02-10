@@ -25,27 +25,33 @@ const get_shoppinglist_items = (req, res, next) => {
 }
 
 const add_shoppinglist_item = (req, res, next) => {
-  let new_shoppinglist_item = shoppinglist_item_model({
-    name: req.body.item_name,
-    quantity: req.body.item_quantity,
-    image: req.body.item_image_url
-  });
 
-  // find shoppinglist
-  shoppinglist_model
-  .findById(req.body.shoppinglist_id)
-  .then(shoppinglist => {
-    console.log(shoppinglist)
-    // insert new item
-    new_shoppinglist_item.save().then(() => {
-      shoppinglist.shoppinglist_items.push(new_shoppinglist_item);
-      shoppinglist.save().then(() => {
-        return res.redirect('/shoppinglist/' + req.body.shoppinglist_id);
-      });
+  if (req.body.item_name && req.body.item_quantity) {
+    let new_shoppinglist_item = shoppinglist_item_model({
+      name: req.body.item_name,
+      quantity: req.body.item_quantity,
+      image: req.body.item_image_url
     });
-  }).catch(err => {
-    console.log(err);
-  });
+
+    // find shoppinglist
+    shoppinglist_model
+    .findById(req.body.shoppinglist_id)
+    .then(shoppinglist => {
+      console.log(shoppinglist)
+      // insert new item
+      new_shoppinglist_item.save().then(() => {
+        shoppinglist.shoppinglist_items.push(new_shoppinglist_item);
+        shoppinglist.save().then(() => {
+          return res.redirect('/shoppinglist/' + req.body.shoppinglist_id);
+        });
+      });
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+  else {
+    return res.redirect('/shoppinglist/' + req.body.shoppinglist_id);
+  }
 }
 
 const update_shoppinglist_quantity = (req, res, next) => {

@@ -15,7 +15,7 @@ footer {
 
 .login_container {
     border-radius: 10px;
-    border: 1px solid green;
+    border: 1px solid darkslategray;
     padding: 20px;
     margin: auto auto;
     width: 50%;
@@ -41,7 +41,7 @@ footer {
 /* shoppinglist list */
 .shoppinglist-list-container {
     border-radius: 10px;
-    border: 1px solid green;
+    border: 1px solid darkslategray;
     padding: 20px;
     margin: auto auto;
     width: 50%;
@@ -88,6 +88,7 @@ footer {
     color: white;
     padding: 5px;
     cursor: pointer;
+    border-radius: 3px;
 }
 
 .btn-primary {

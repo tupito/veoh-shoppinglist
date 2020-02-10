@@ -18,6 +18,8 @@ const handle_user = (req, res, next) => {
   }
 
 const post_register = (req, res, next) => {
+
+  if (req.body.user_name) {
     const user_name = req.body.username;
   
     user_model
@@ -38,7 +40,10 @@ const post_register = (req, res, next) => {
           return res.redirect("/login");
         });
       });
+  } else {
+    return res.redirect("/login");
   }
+}
 
 const get_login = (req, res, next) => {
     res.send(auth_views.login_view())

@@ -116,7 +116,7 @@ const shoppinglist_items_view = ((data) => {
         </div>
     </form>
     <hr>
-    <h3>items</h3>
+    <h3>Items</h3>
     `;
 
      data.shoppinglist.shoppinglist_items.forEach(item => {

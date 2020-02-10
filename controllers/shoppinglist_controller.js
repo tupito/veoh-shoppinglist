@@ -18,17 +18,21 @@ const get_shoppinglists = (req, res, next) => {
 
 const add_shoppinglist = (req, res, next) => {
     const user = req.user;
-    let new_shoppinglist = shoppinglist_model({
-      name: req.body.shoppinglist_name
-    });
-    new_shoppinglist.save().then(() => {
-      console.log('shoppinglist saved');
-      console.log('user', user)
-      user.shoppinglists.push(new_shoppinglist);
-      user.save().then(() => {
-        return res.redirect('/');
+    if (req.body.shoppinglist_name) {
+      let new_shoppinglist = shoppinglist_model({
+        name: req.body.shoppinglist_name
       });
-    });
+      new_shoppinglist.save().then(() => {
+        console.log('shoppinglist saved');
+        console.log('user', user)
+        user.shoppinglists.push(new_shoppinglist);
+        user.save().then(() => {
+          return res.redirect('/');
+        });
+      });
+    } else {
+      return res.redirect('/');
+    }
   }
 
 const delete_shoppinglist = (req, res, next) => {
