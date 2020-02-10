@@ -73,36 +73,62 @@ const shoppinglists_view = ((data) =>{
 const shoppinglist_items_view = ((data) => {
     let html = html_shared.html_head
     html += `
-    <div>
-    <div class = "shoppingListItems">
-    <h1>Shopping list ${data.name} items, id ${data._id}</h1>
-
-        <div>
-            <form action="/add-shoppinglist-item" method="POST">
+    <div class = "shoppinglist-list-container">
+    <h2>Shoppinglist: ${data.name}</h2>
+    <h3>New item</h3>
+    <form action="/add-shoppinglist-item" method="POST">
+    <input type="hidden" name="shoppinglist_id" value="${data._id}">
+        <div class="list-grid-2-col">
+            <div class="grid-item">
                 <label for="item_name">Item name </label>
-                <input type="text" name="item_name">
-                
-                <label for="item_quantity">Item quantity</label>
-                <input type="number" name="item_quantity">
+            </div>
 
-                <label for="item_image_url">Item image url</label>
-                <input type="text" name="item_image_url">                
+            <div class="grid-item"> 
+                <input type="text" name="item_name">
+            </div>
                 
-                <input type="hidden" name="shoppinglist_id" value="${data._id}">
-                <button type="submit" class="btn-primary">Add</button>
-            </form>
+            <div class="grid-item">
+                <label for="item_quantity">Item quantity</label>
+            </div>
+
+            <div class="grid-item">
+                <input type="number" name="item_quantity">
+            </div>
+
+            <div class="grid-item">
+                <label for="item_image_url">Item image url</label>
+            </div>
+
+            <div class="grid-item">
+                <input type="text" name="item_image_url">
+            </div>
+                
+            <div class="grid-item">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
         </div>
+    </form>
+    <hr>
+    <h3>items</h3>
     `;
 
      data.shoppinglist_items.forEach(item => {
-         html += `
-         <li>item: ${item.name} quantity: ${item.quantity} image: <img src="${item.image}" width="50px">
-            <form action="/delete-shoppinglist-item" method="POST">
-                <input type="hidden" name="shoppinglist_id" value="${data._id}">
-                <input type="hidden" name="shoppinglist_item_id" value="${item._id}">
-                <button type="submit">Delete</button>
-            </form>
-        </li>
+        html += `
+        <form action="/delete-shoppinglist-item" method="POST">
+        <input type="hidden" name="shoppinglist_id" value="${data._id}">
+        <input type="hidden" name="shoppinglist_item_id" value="${item._id}">
+
+        <div class="list-grid-4-col">
+            <div class="grid-item"><img src="${item.image}" height="30px"></div>
+            <div class="grid-item">${item.name}</div>
+            <div class="grid-item">${item.quantity}</div>
+            <div class="grid-item">
+                <button class="btn btn-primary">+</button>
+                <button class="btn btn-primary">-</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+        </form>
         `
     });  
 
