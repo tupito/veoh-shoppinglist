@@ -40,6 +40,7 @@ app.post("/delete-shoppinglist", shoppinglist_controller.delete_shoppinglist);
 app.get("/shoppinglist/:id", shoppinglist_item_controller.get_shoppinglist_items);
 app.post("/add-shoppinglist-item", shoppinglist_item_controller.add_shoppinglist_item);
 app.post("/delete-shoppinglist-item", shoppinglist_item_controller.delete_shoppinglist_item);
+app.post("/update_shoppinglist_quantity/:edit", shoppinglist_item_controller.update_shoppinglist_quantity);
 
 // 404
 app.use((req, res, next) => {

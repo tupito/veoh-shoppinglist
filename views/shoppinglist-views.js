@@ -123,8 +123,8 @@ const shoppinglist_items_view = ((data) => {
             <div class="grid-item">${item.name}</div>
             <div class="grid-item">${item.quantity}</div>
             <div class="grid-item">
-                <button class="btn btn-primary">+</button>
-                <button class="btn btn-primary">-</button>
+                <button type="submit" class="btn btn-primary" formaction="/update_shoppinglist_quantity/1">+</button>
+                <button type="submit" class="btn btn-primary" formaction="/update_shoppinglist_quantity/-1">-</button>
                 <button type="submit" class="btn btn-danger">Delete</button>
             </div>
         </div>

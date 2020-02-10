@@ -42,11 +42,31 @@ const add_shoppinglist_item = (req, res, next) => {
   });
 }
 
+const update_shoppinglist_quantity = (req, res, next) => {
+
+  console.log(req.params)
+
+  let quantity_change = parseInt(req.params.edit) // -1 || 1
+
+  // find shoppinglist item
+  shoppinglist_item_model
+  .findById(req.body.shoppinglist_item_id)
+  .then(item => {
+      console.log(item)
+      item.quantity += quantity_change
+      item.save().then(() => {
+        return res.redirect('/shoppinglist/' + req.body.shoppinglist_id);  
+      });
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
 const delete_shoppinglist_item = (req, res, next) => {
 
   const shoppinglist_item_id_to_delete = req.body.shoppinglist_item_id;
-  console.log(req.body)
 
+  // find shoppinglist
   shoppinglist_model
   .findById(req.body.shoppinglist_id)
   .then(shoppinglist => {
@@ -70,3 +90,4 @@ const delete_shoppinglist_item = (req, res, next) => {
 module.exports.get_shoppinglist_items = get_shoppinglist_items;
 module.exports.add_shoppinglist_item = add_shoppinglist_item;
 module.exports.delete_shoppinglist_item = delete_shoppinglist_item;
+module.exports.update_shoppinglist_quantity = update_shoppinglist_quantity;
