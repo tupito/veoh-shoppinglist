@@ -34,25 +34,34 @@ const shoppinglists_view = ((data) =>{
     let html = user_info_view(data)
     
     html += `
-    <div>
-      <form action="/add-shoppinglist" method="POST">
-          <label for="shoppinglist_name">New shoppinglist</label>
-          <input type="text" name="shoppinglist_name">
-          <button type="submit" class="btn-primary">Add</button>
-      </form>
-    </div>
+    <div class = "shoppinglist-list-container">
+    <h2>User's ${data.user_name} shopping lists</h2>
 
-    <div class = "shoppingLists">
-    <h1>User's ${data.user_name} shoppingLists</h1>
+    <form action="/add-shoppinglist" method="POST">
+    <div class="list-grid-2-col">
+        <div class="grid-item">
+            <input type="text" name="shoppinglist_name" placeholder="New shoppinglist...">
+        </div>
+        <div class="grid-item">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </div>
+    </form>
     `;
 
     data.shoppinglists.forEach(shoppinglist => {
-        html += `<li><a href="/shoppinglist/${shoppinglist._id}">${shoppinglist.name}</a>
-            <form action="delete-shoppinglist" method="POST">
-                <input type="hidden" name="shoppinglist_id" value="${shoppinglist._id}">
-                <button type="submit">Delete</button>
-            </form>
-        </li>`
+        html += `
+        <form action="delete-shoppinglist" method="POST">
+        <div class="list-grid-2-col">
+            <input type="hidden" name="shoppinglist_id" value="${shoppinglist._id}">
+            <div class="grid-item">
+                <a href="/shoppinglist/${shoppinglist._id}">${shoppinglist.name}</a>
+            </div>
+            <div class="grid-item">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+        </form>`
     });
 
     html += `</div>`;
